@@ -39,7 +39,7 @@ public class SecuredControllerTest extends BaseTest {
     @Test
     void getPreferredName_ShouldAllowAuthenticatedUser_ToAccessSecuredEndpoint() throws Exception {
         mockMvc.perform(
-                get("/secure/preferred-name").with(
+                get("/secure/ssn").with(
                         authentication(authenticatedUser(List.of(ROLE_USER, ROLE_ADMIN, ROLE_QA, ROLE_PROD))))
                     .contentType(APPLICATION_JSON))
             .andExpect(status().isOk())

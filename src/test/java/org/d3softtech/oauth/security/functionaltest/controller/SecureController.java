@@ -33,8 +33,8 @@ public class SecureController {
     }
 
     @PreAuthorize("hasRole('ADMIN') && hasRole('ROLE_QA') && hasRole('ROLE_PROD') && hasRole('ROLE_USER')")
-    @GetMapping("/preferred-name")
-    public ResponseEntity<String> getPreferredName(@SocialSecurityNumber String socialSecurityNumber)
+    @GetMapping("/ssn")
+    public ResponseEntity<String> getSocialSecurityNumber(@SocialSecurityNumber String socialSecurityNumber)
         throws JsonProcessingException {
         Map<String, String> responseMap = Map.of("ssn", socialSecurityNumber);
         return ResponseEntity.ok(JSON_MAPPER.writeValueAsString(responseMap));

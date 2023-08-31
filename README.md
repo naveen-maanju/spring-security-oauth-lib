@@ -41,23 +41,33 @@ public class SpringSecurityConfig extends AbstractSecurityConfig {
 //Inside controller
 
 //To fetch all the details use @AuthenticationPrincipal AuthenticatedUser authenticatedUser
+@PreAuthorize("hasAnyRole('ADMIN','QA','DEV','USER')")
 @GetMapping("/users")
-public ResponseEntity<String> getUserDetails(@SecurityContextAuthenticatedUser AuthenticatedUser authenticatedUser)
+public ResponseEntity<String> getUserDetails(
+@SecurityContextAuthenticatedUser AuthenticatedUser authenticatedUser)
     throws JsonProcessingException{
-    Map<String, Object> responseMap=Map.of(
-    "preferred_username",authenticatedUser.getPreferredUsername(),
+    Map<String, Object> responseMap=Map.of("ssn",authenticatedUser.getSocialSecurityNumber(),
+    "username",authenticatedUser.getUserName(),
     "roles",authenticatedUser.getRoles(),
     "iss",authenticatedUser.getToken().getClaimAsString("iss"),
     "aud",authenticatedUser.getToken().getClaimAsString("aud"),
-    "name",authenticatedUser.getDisplayName());
+    "name",authenticatedUser.getUserName());
     return ResponseEntity.ok(JSON_MAPPER.writeValueAsString(responseMap));
     }
 
-@GetMapping("/preferred-name")
-public ResponseEntity<String> getPreferredName(@PreferredUserName String preferredUserName)
+//To fetch specific claim (mostly used) use annotation based approach
+@PreAuthorize("hasRole('ADMIN') && hasRole('ROLE_QA') && hasRole('ROLE_PROD') && hasRole('ROLE_USER')")
+@GetMapping("/ssn")
+public ResponseEntity<String> getSocialSecurityNumber(@SocialSecurityNumber String socialSecurityNumber)
     throws JsonProcessingException{
-    Map<String, String> responseMap=Map.of("preferredName",preferredUserName);
+    Map<String, String> responseMap=Map.of("ssn",socialSecurityNumber);
     return ResponseEntity.ok(JSON_MAPPER.writeValueAsString(responseMap));
+    }
+
+@PreAuthorize("hasRole('SUPER_ADMIN')")
+@GetMapping("/most-secured")
+public void getCompleteProfile(){
+    .....
     }
 ```
 
@@ -70,8 +80,8 @@ AuthenticatedUser authenticatedUser=(AuthenticatedUser)SecurityContextHolder.get
 ### Granular access
 
 Now authorization can be done at granular level, that is, we can define the access (authorization)
-at method level based on the claim "roles". User JWT have claim "roles", which is list of assigned
-roles to the user and that can be referred while executing a method whether use has the required
-role or not.
+at method level based on the claim "roles/scopes". User JWT can be enriched to have claim "roles"
+or "scope"", which can be a list of assigned roles to the user and that can be referred while executing 
+a method whether use has the required role or not.
 
-To secure a method we can use ``@PreAuthorize`` annotation. Example in test package.
+To secure a method we can use ``@PreAuthorize`` annotation. Refer example [here](https://github.com/naveen-maanju/spring-security-oauth-lib/blob/main/src/test/java/org/d3softtech/oauth/security/functionaltest/controller/SecureController.java)

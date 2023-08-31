@@ -16,7 +16,7 @@ public abstract class BaseTest {
 
     public static final String TEST_USER_NAME = "test-user";
     public static final String TEST_USER_SSN = "197611119877";
-    public static final String TEST_USER_EMAIL = "test-user@thunderkick.com";
+    public static final String TEST_USER_EMAIL = "test-user@d3softtech.com";
     public static final String DUMMY_ISSUER = "dummy-issuer";
     public static final String DUMMY_AUD = "dummy-aud";
     public static final GrantedAuthority ROLE_ADMIN = new SimpleGrantedAuthority("ROLE_ADMIN");
