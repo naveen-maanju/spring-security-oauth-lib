@@ -20,8 +20,7 @@ public class SecureController {
 
     @PreAuthorize("hasAnyRole('ADMIN','QA','DEV','USER')")
     @GetMapping("/users")
-    public ResponseEntity<String> getUserDetails(
-        @SecurityContextAuthenticatedUser AuthenticatedUser authenticatedUser)
+    public ResponseEntity<String> getUserDetails(@SecurityContextAuthenticatedUser AuthenticatedUser authenticatedUser)
         throws JsonProcessingException {
         Map<String, Object> responseMap = Map.of("ssn", authenticatedUser.getSocialSecurityNumber(),
             "username", authenticatedUser.getUserName(),
