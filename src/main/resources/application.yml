@@ -1,4 +1,0 @@
-spring:
-  cloud.azure.active-directory.profile.tenant-id: 857d0be8-16d7-98in-9fec-6000971b7a41
-  security.oauth2.resourceserver.jwt.issuer-uri: https://dummy-login.microsoftonline.com/${spring.cloud.azure.active-directory.profile.tenant-id}/v2.0
-management.server.port: 8081
