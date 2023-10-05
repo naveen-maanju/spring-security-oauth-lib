@@ -37,7 +37,6 @@ public abstract class BaseTest {
             .headers(httpHeaders -> httpHeaders.setBasicAuth("spring-test", "test-secret")).retrieve()
             .bodyToMono(Token.class).block(
                 Duration.ofSeconds(2));
-        System.out.println("----------" + token);
         return token;
     }
 }
