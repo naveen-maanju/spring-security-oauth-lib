@@ -9,7 +9,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 public class AuthenticatedUser extends JwtAuthenticationToken {
 
     public static final String SOCIAL_SECURITY_NUMBER_CLAIM = "ssn";
-    public static final String USER_NAME_CLAIM = "user_name";
+    public static final String USER_NAME_CLAIM = "username";
 
     public static final String EMAIL_CLAIM="email";
     public static final String ROLES_CLAIM = "roles";

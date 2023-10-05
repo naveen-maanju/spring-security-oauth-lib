@@ -11,8 +11,8 @@
     <relativePath/>
   </parent>
 
-  <groupId>org.d3softtech</groupId>
-  <artifactId>spring-security-oauth-lib</artifactId>
+  <groupId>org.d3softtech.oauth</groupId>
+  <artifactId>spring-oauth-security</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>

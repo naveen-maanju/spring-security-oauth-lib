@@ -1,9 +1,11 @@
 package org.d3softtech.oauth.reactive.security.functionaltest;
 
-import static java.lang.String.format;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.d3softtech.oauth.reactive.security.user.RoleContainer.ADMIN;
+import static org.d3softtech.oauth.reactive.security.user.RoleContainer.PROD;
+import static org.d3softtech.oauth.reactive.security.user.RoleContainer.QA;
+import static org.d3softtech.oauth.reactive.security.user.RoleContainer.USER;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-
 
 import org.d3softtech.oauth.reactive.security.BaseTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,17 +31,15 @@ public class SecuredControllerTest extends BaseTest {
     @Test
     void getUserDetails_ShouldAllowAuthenticatedUser_ToAccessSecuredEndpoint() {
 
+        final String token = getToken().accessToken();
         webTestClient.get()
             .uri(uriBuilder -> uriBuilder.path("/secure/users").build())
-            .header(AUTHORIZATION, format("Bearer %s", TOKEN)).accept(APPLICATION_JSON)
+            .headers(headers -> headers.setBearerAuth(token)).accept(APPLICATION_JSON)
             .exchange()
             .expectStatus().isOk()
             .expectBody()
             .jsonPath("$.username").isEqualTo(TEST_USER_NAME)
-            .jsonPath("$.roles[0]").isEqualTo("admin")
-            .jsonPath("$.roles[1]").isEqualTo("user")
-            .jsonPath("$.roles[2]").isEqualTo("env_PROD")
-            .jsonPath("$.roles[3]").isEqualTo("env_QA")
+            .jsonPath("$.roles[*]").value(containsInAnyOrder("admin", "user"))
             .jsonPath("$.aud").isEqualTo(DUMMY_AUD)
             .jsonPath("$.ssn").isEqualTo(TEST_USER_SSN)
             .jsonPath("$.email").isEqualTo(TEST_USER_EMAIL);
@@ -47,9 +47,11 @@ public class SecuredControllerTest extends BaseTest {
 
     @Test
     void getPreferredName_ShouldAllowAuthenticatedUser_ToAccessSecuredEndpoint() {
+        final String token = getToken(ADMIN, USER, QA, PROD).accessToken();
+
         webTestClient.get()
             .uri(uriBuilder -> uriBuilder.path("/secure/preferred-name").build())
-            .header(AUTHORIZATION, format("Bearer %s", TOKEN)).accept(APPLICATION_JSON).accept(APPLICATION_JSON)
+            .headers(headers -> headers.setBearerAuth(token)).accept(APPLICATION_JSON).accept(APPLICATION_JSON)
             .exchange()
             .expectStatus().isOk()
             .expectBody()
@@ -60,10 +62,11 @@ public class SecuredControllerTest extends BaseTest {
 
     @Test
     void unauthorizedAccess_ShouldReturn403ForMissingRole() {
+        final String token = getToken(ADMIN, USER, QA, PROD).accessToken();
 
         webTestClient.get()
             .uri(uriBuilder -> uriBuilder.path("/secure/most-secured").build())
-            .header(AUTHORIZATION, format("Bearer %s", TOKEN)).accept(APPLICATION_JSON).accept(APPLICATION_JSON)
+            .headers(headers -> headers.setBearerAuth(token)).accept(APPLICATION_JSON).accept(APPLICATION_JSON)
             .exchange()
             .expectStatus().isForbidden();
     }

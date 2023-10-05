@@ -32,7 +32,7 @@ public class SecureController {
             "username", authenticatedUser.getUserName(),
             "roles", authenticatedUser.getRoles(),
             "iss", authenticatedUser.getToken().getClaimAsString("iss"),
-            "aud", authenticatedUser.getToken().getClaimAsString("aud"),
+            "aud", authenticatedUser.getToken().getAudience().get(0),
             "email", authenticatedUser.getEmail());
         return Mono.just(JSON_MAPPER.writeValueAsString(responseMap));
     }
